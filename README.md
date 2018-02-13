@@ -1,4 +1,4 @@
-# personal-website
+# smccumsey.com
 
 > A Vue.js project
 
