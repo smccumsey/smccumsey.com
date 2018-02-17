@@ -32,6 +32,9 @@ export default {
 </script>
 
 <style scoped>
+.g-signin2 {
+  margin: 0 auto;
+}
 .home__logo {
     position: relative;
     width: 100%;
