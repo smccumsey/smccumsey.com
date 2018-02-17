@@ -2,14 +2,20 @@
 
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
+  parser: "vue-eslint-parser",
   parserOptions: {
-    sourceType: 'module'
+    parser: "babel-eslint",
+    ecmaVersion: 2017,
+    sourceType: "module"
   },
   env: {
     browser: true,
   },
-  extends: 'airbnb-base',
+  extends: [
+    'airbnb-base',
+    'plugin:vue/essential',
+    'plugin:vue/recommended',
+],
   // required to lint *.vue files
   plugins: [
     'html'

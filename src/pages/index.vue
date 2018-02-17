@@ -10,7 +10,7 @@
   </div>
   <article class="bio">
     <p>Welcome! I'm a software devloper working mostly on the front-end.</p>
-    <p>Please check back on Feb 15 for a project demo.</p>
+    <p>Please check back for upcoming project demos.</p>
     <!-- <ul class="users">
       <li v-for="(user, index) in users" :key="index" class="user">
         <nuxt-link :to="{ name: 'id', params: { id: index }}">

@@ -4,6 +4,7 @@ import Vue from 'vue';
 import App from './App';
 import router from './router';
 
+
 Vue.config.productionTip = false;
 require('./assets/css/main.css');
 
@@ -11,6 +12,6 @@ require('./assets/css/main.css');
 new Vue({
   el: '#app',
   router,
-  template: '<App/>',
   components: { App },
+  template: '<App/>',
 });

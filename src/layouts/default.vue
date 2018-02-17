@@ -1,7 +1,7 @@
 <template>
   <div>
     <my-header/>
-    <my-index/>
+    <router-view></router-view>
     <my-footer/>
   </div>
 </template>
@@ -9,13 +9,11 @@
 <script>
 import MyFooter from '@/components/Footer';
 import MyHeader from '@/components/Header';
-import MyIndex from '@/pages/index';
 
 export default {
   components: {
     MyFooter,
     MyHeader,
-    MyIndex,
   },
 };
 </script>
