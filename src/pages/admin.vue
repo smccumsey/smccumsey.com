@@ -1,24 +1,32 @@
 <template lang="html">
-  <div class="">
-    <button type="button" name="button" @click="addEvent">Add Event</button>
-    <a href="#" @click="signOut">Sign out</a>
-    <div id="my-signin2"></div>
+  <div class="admin">
+    <section class="admin__auth">
+      <div id="my-signin2"></div>
+      <a href="#" @click="signOut">Sign out</a>
+    </section>
+    <create-event-form></create-event-form>
   </div>
 </template>
 
 <script>
-const AWS = require('aws-sdk');
+import CreateEventForm from '@/components/CreateEventForm';
 
-const ddb = new AWS.DynamoDB();
+const AWS = require('aws-sdk');
+const AWSCognito = require('../../static/js/amazon-cognito.min.js')
 
 export default {
+  components: {
+    CreateEventForm
+  },
   data() {
-    return {};
+    return {
+      ddb: null,
+    };
   },
   methods: {
-    // init() {
-    //   gapi.load('auth2', () => { // Ready. });
-    // },
+    init() {
+      gapi.load('auth2', () => {});
+    },
     renderButton() {
       gapi.signin2.render('my-signin2', {
         'scope': 'profile email',
@@ -34,13 +42,13 @@ export default {
       const params = {
         TableName: 'Events',
         Item: {
-          EventId: { N: '001' },
-          EventName: { S: 'party' },
+          EventId: { N: '002' },
+          EventName: { S: 'partyyyyy' },
         },
       };
 
       // Call DynamoDB to add the item to the table
-      ddb.putItem(params, (err, data) => {
+      this.ddb.putItem(params, (err, data) => {
         if (err) {
           console.log('Error', err);
         } else {
@@ -86,6 +94,7 @@ export default {
           });
         });
       });
+      this.ddb = new AWS.DynamoDB();
     },
     signOut() {
       const auth2 = gapi.auth2.getAuthInstance();
@@ -95,6 +104,7 @@ export default {
     }
   },
   mounted() {
+    this.init();
     this.renderButton();
   },
 };
@@ -102,4 +112,17 @@ export default {
 </script>
 
 <style lang="css">
+  .admin {
+    width: 100%;
+  }
+  .admin__auth {
+    margin: 40px 10px;
+    padding: 10px;
+    display: grid;
+    justify-items: center;
+    grid-row-gap: 20px;
+  }
+  .admin__create {
+  }
+
 </style>
