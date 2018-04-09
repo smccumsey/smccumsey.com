@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import Default from '@/layouts/default';
 import Index from '@/pages/index';
 import Eugene from '@/pages/eugene';
+import DataViz from '@/pages/dataviz';
 import Admin from '@/pages/admin';
 
 Vue.use(Router);
@@ -20,6 +21,10 @@ export default new Router({
         {
           path: 'eugene',
           component: Eugene,
+        },
+        {
+          path: 'dataviz',
+          component: DataViz,
         },
         {
           path: 'admin',

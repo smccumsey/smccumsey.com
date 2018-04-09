@@ -4,7 +4,7 @@
       <div id="my-signin2"></div>
       <a href="#" @click="signOut">Sign out</a>
     </section>
-    <create-event-form></create-event-form>
+    <create-event-form @submitEvent="pushEvent"></create-event-form>
   </div>
 </template>
 
@@ -38,12 +38,16 @@ export default {
         'onfailure': this.onFailure
       });
     },
-    addEvent() {
+    pushEvent(data) {
       const params = {
         TableName: 'Events',
         Item: {
-          EventId: { N: '002' },
-          EventName: { S: 'partyyyyy' },
+          EventId: { N: `${new Date().valueOf()}` },
+          EventName: { S: data.title },
+          ContactName: { S: data.name },
+          startDate: { S: `${data.startDate}` },
+          endDate: { S: `${data.endDate}` },
+          DateCreated: { S: `${new Date()}` }
         },
       };
 
@@ -54,6 +58,13 @@ export default {
         } else {
           console.log('Success', data);
         }
+      });
+      const describeParams = {
+        TableName: 'Events' /* required */
+      };
+      this.ddb.describeTable(describeParams, function(err, data) {
+        if (err) console.log(err, err.stack); // an error occurred
+        else     console.log(data);           // successful response
       });
     },
     onFailure() {

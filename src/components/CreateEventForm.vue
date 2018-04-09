@@ -4,14 +4,14 @@
       <h3>Title</h3>
       <div class="item__subitem">
         <label>Event Title</label>
-        <input type="text" name="" value="">
+        <input type="text" v-model="title">
       </div>
     </div>
     <div class="create__item">
       <h3>Contact Information</h3>
       <div class="item__subitem">
         <label>Name</label>
-        <input type="text" name="" value="">
+        <input type="text" v-model="name">
       </div>
       <div class="item__subitem">
         <label>Phone</label>
@@ -39,18 +39,18 @@
       </div>
       <div class="item__subitem">
         <label>URL</label>
-        <input type="text" name="" value="">
+        <input type="text" v-model="url">
       </div>
     </div>
     <div class="create__item">
       <h3>Event Date Range</h3>
       <div class="item__subitem">
         <label>Start Date</label>
-        <datepicker placeholder="Select Date" :value="startDate"></datepicker>
+        <datepicker placeholder="Select Date" v-model="startDate"></datepicker>
       </div>
       <div class="item__subitem">
         <label>End Date</label>
-        <datepicker placeholder="Select Date" :value="endDate"></datepicker>
+        <datepicker placeholder="Select Date" v-model="endDate"></datepicker>
       </div>
     </div>
     <div class="create__item">
@@ -58,7 +58,7 @@
       <vue-editor v-model="description"></vue-editor>
     </div>
     <div class="create__item">
-      <button class="submit-button" type="button" name="button" @click="submitEvent">Add Event</button>
+      <button class="submit-button" type="button" name="button" @click="submit">Add Event</button>
     </div>
   </section>
 </template>
@@ -83,13 +83,14 @@ export default {
       description: null,
       phone: null,
       email: null,
+      url: null,
       name: null,
       emailMask: emailMask,
     };
   },
   methods: {
-    submitEvent() {
-      return {
+    submit() {
+      const eventData = {
         startDate: this.startDate,
         endDate: this.endDate,
         name: this.name,
@@ -98,6 +99,7 @@ export default {
         title: this.title,
         description: this.description,
       }
+      this.$emit('submitEvent', eventData);
     }
   }
 }
