@@ -12,13 +12,10 @@ export default {
       crimeData: null,
       map: null,
       uniqueOffenses: null,
+      layers: {},
     }
   },
   methods: {
-    getLocation(input) {
-      // search
-      const results = provider.search({ query: input.value });
-    },
     getUnique(dataset, prop) {
       // get offense categories
       const uniqueArr = dataset.reduce((acc, elem) => {
@@ -62,49 +59,6 @@ export default {
           }).addTo(map);
         });
 
-      // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      //     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      // }).addTo(map);
-//       var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
-//
-//       mapboxgl.accessToken = `
-// pk.eyJ1Ijoic21jY3Vtc2V5IiwiYSI6ImNqZ2lyem1ucDBxYnQycXBxOTV2eWRlYmoifQ.rPD4wTlJ2zWXBMyu1VEUkA`;
-//       var map = new mapboxgl.Map({
-//         container: 'map',
-//         style: 'mapbox://styles/mapbox/streets-v10',
-//         center: [-105.257869, 40.025647],
-//         zoom: 12.14,
-//       });
-
-      // map.on('load', function () {
-      //     map.addLayer({
-      //         'id': 'population',
-      //         'type': 'circle',
-      //         'source': {
-      //             type: 'vector',
-      //             url: 'mapbox://examples.8fgz4egr'
-      //         },
-      //         'source-layer': 'sf2010',
-      //         'paint': {
-      //             // make circles larger as the user zooms from z12 to z22
-      //             'circle-radius': {
-      //                 'base': 1.75,
-      //                 'stops': [[12, 2], [22, 180]]
-      //             },
-      //             // color circles by ethnicity, using a match expression
-      //             // https://www.mapbox.com/mapbox-gl-js/style-spec/#expressions-match
-      //             'circle-color': [
-      //                 'match',
-      //                 ['get', 'ethnicity'],
-      //                 'White', '#fbb03b',
-      //                 'Black', '#223b53',
-      //                 'Hispanic', '#e55e5e',
-      //                 'Asian', '#3bb2d0',
-      //                 /* other */ '#ccc'
-      //             ]
-      //         }
-      //     });
-      // });
       this.loadData().then((res) => {
         // map.on('load', function () {
           const organizedCrime = {};
@@ -113,7 +67,7 @@ export default {
           // const colors = d3.scaleOrdinal.range(["#A07A19", "#AC30C0", "#EB9A72", "#BA86F5", "#EA22A8"]);
           const color = d3.scaleOrdinal()
             .domain(uniqueOffenses)
-            .range(d3.quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), uniqueOffenses.length).reverse())
+            .range(d3.quantize(t => d3.interpolateSpectral(t * 0.99 + 0.1), uniqueOffenses.length).reverse())
           // const spectrum = d3.scaleOrdinal(d3.schemeRdYlGn[uniqueOffenses.length]);
           crimeData.forEach((x) => {
             // create a HTML element for each feature
@@ -134,10 +88,11 @@ export default {
           })
           console.log(organizedCrime);
           Object.keys(organizedCrime).forEach((key) => {
-            L.layerGroup(organizedCrime[key])
+            this.layers[key] = L.layerGroup(organizedCrime[key])
               .on('click', function() { L.Layer.remove() })
               .addTo(map);
           })
+          L.control.layers(this.layers).addTo(map);
         // })
       });
     }
