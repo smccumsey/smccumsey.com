@@ -68,7 +68,7 @@ export default {
 
           L.geoJSON(cityData, {
               style: function (feature) {
-                return { weight: 2, color: '#808080' };
+                return { weight: 2, fillColor: '#808080', color: '#0080ff' };
                   // return {color: feature.properties.color};
               }
           }).bindTooltip(function (layer) {

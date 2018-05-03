@@ -1,6 +1,11 @@
 <template>
   <div id='dataviz'>
-    <data-map/>
+    <div class="left">
+      <div class="wrapper">
+        <data-filter/>
+      </div>
+    </div>
+    <data-map class="right"/>
   </div>
 </template>
 
@@ -12,19 +17,29 @@ export default {
   name: 'Dataviz',
   components: {
     DataMap,
-    DataFilter
-  }
+    DataFilter,
+  },
 }
 </script>
 
 <style>
   #dataviz {
     height: 100%;
+    display: flex;
   }
+
+  .left,
+  .right {
+    flex: 0 0 50%;
+  }
+
+  .wrapper {
+    margin: 40px;
+  }
+
   #map {
-    float: right;
+    /* float: right; */
     height: 100vh;
-    width: 70%;
   }
   .marker {
     background: black;
