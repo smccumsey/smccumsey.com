@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Default from '@/layouts/default';
 import Index from '@/pages/index';
-import Eugene from '@/pages/eugene';
+// import Eugene from '@/pages/eugene';
 import DataViz from '@/pages/dataviz';
 import Admin from '@/pages/admin';
 
@@ -18,10 +18,10 @@ export default new Router({
           path: '',
           component: Index,
         },
-        {
-          path: 'eugene',
-          component: Eugene,
-        },
+        // {
+        //   path: 'eugene',
+        //   component: Eugene,
+        // },
         {
           path: 'dataviz',
           component: DataViz,

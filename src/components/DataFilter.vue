@@ -1,5 +1,6 @@
 <template lang="html">
   <vue-slider
+  @callback="onSlide"
   v-model="value">
     <div class="diy-tooltip" slot="tooltip" slot-scope="{ value }">
       {{ getFormatedDate(value) }}
@@ -20,8 +21,8 @@ export default {
     return {
       min: 0,
       max: 100,
-      myDateRange: [new Date(2008,0,1), new Date(2018,0,11)],
-      myRange: [0, 100],
+      myDateRange: [new Date(2008,0,1), new Date(2018,0,11)], // TODO: update to actual date range
+      mySlideRange: [0, 100],
       value: [0, 100],
     }
   },
@@ -29,7 +30,7 @@ export default {
     timeScale() {
       return d3.scaleTime()
         .domain(this.myDateRange)
-        .range(this.myRange);
+        .range(this.mySlideRange);
     },
     invertedScale() {
       return this.value.map(x => this.timeScale.invert(x))
@@ -47,10 +48,8 @@ export default {
 
       const diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime())/(oneDay)));
     },
-    setScale() {
-      var timeScale = d3.time.scale()
-        .domain(this.myDateRange)
-        .range(this.myRange);
+    onSlide() {
+      console.log('sliiiiidee', this.value.map(x => this.timeScale.invert(x)))
     },
   },
 }
