@@ -11,6 +11,9 @@ import * as d3 from 'd3';
 import 'leaflet';
 import 'leaflet.markercluster';
 import 'leaflet.markercluster.layersupport';
+// import '../../static/js/jquery-1.9.1.min.js'
+// import '../../static/js/jquery-ui.js'
+// import '../../static/js/leaflet.SliderControl.min.js'
 
 export default {
   data() {
@@ -88,25 +91,34 @@ export default {
     addData(dataFeatures) {
       return new Promise((resolve, reject) => {
         const map = this.map;
-        const pointList = [];
-        const markers = L.markerClusterGroup.layerSupport({
+        // const pointList = [];
+        const mcgLayerSupportGroup = L.markerClusterGroup.layerSupport({
           chunkedLoading: true,
+          chunkInterval: 100,
           chunkProgress: this.updateProgressBar,
+          showCoverageOnHover: false,
         });
-        const control = L.control.layers(null, null, { collapsed: false });
+        const control = L.control.layers(null, null, {
+          collapsed: false,
+          sortLayers: true,
+          hideSingleBase: true,
+          sortFunction: (layerA, layerB, nameA, nameB)  => {
+            return dataFeatures[nameB].length - dataFeatures[nameA].length;
+          },
+        });
 
         const uniqueOffenses = Object.keys(dataFeatures);
         const timeFormat = d3.timeFormat("%a %b %e, %Y");
-        const color = d3.scaleOrdinal()
+        const colorPicker = d3.scaleOrdinal()
           .domain(uniqueOffenses)
           .range(d3.quantize(t => d3.interpolateRainbow(t), uniqueOffenses.length));
 
-        uniqueOffenses.forEach((x) => {
-          const points = L.geoJSON(dataFeatures[x], {
+        const myLayerGroups = uniqueOffenses.map((x) => {
+          return L.geoJSON(dataFeatures[x], {
             pointToLayer: function (feature, latlng) {
               return L.circleMarker(latlng, {
                   radius: 4,
-                  color: color(feature.properties.OFFENSE),
+                  color: colorPicker(feature.properties.OFFENSE),
                   weight: 4,
                   opacity: 1,
                   fillOpacity: 0.8
@@ -119,31 +131,31 @@ export default {
               layer.bindTooltip(popupText);
             }
           });
-          // markers.addLayer(points);
-          pointList.push(points);
         });
-        debugger;
-        const myLayerGroups = pointList.map((group) => {
-           return L.layerGroup(group);
-        })
-        markers.addTo(map);
-        markers.checkIn(myLayerGroups);
-        myLayerGroups.forEach((group) => {
-          control.addOverlay(group, 'First quarter');
+
+
+        mcgLayerSupportGroup.addTo(map);
+        mcgLayerSupportGroup.checkIn(myLayerGroups);
+        myLayerGroups.forEach((group, index) => {
+          control.addOverlay(group, uniqueOffenses[index]);
         })
         control.addTo(map);
         myLayerGroups.forEach((group) => {
           group.addTo(map);
         })
-        map.addLayer(markers);
+        map.addLayer(mcgLayerSupportGroup);
 
-        // L.control.layers(myLayerGroup, null, {
-        //   collapsed: false,
-        //   sortLayers: true,
-        //   sortFunction: (layerA, layerB, nameA, nameB)  => {
-        //     return dataFeatures[nameB].length - dataFeatures[nameA].length;
-        //   }
-        // }).addTo(map);
+        // const sliderControl = L.control.sliderControl({
+        //   position: "topleft",
+        //   layer: myLayerGroups[0],
+        //   range: true,
+        //   timeAttribute:"REPORTDATE"
+        // });
+        //
+        // //Make sure to add the slider to the map ;-)
+        // map.addControl(sliderControl);
+        // //And initialize the slider
+        // sliderControl.startSlider();
         return resolve()
       })
 
@@ -152,7 +164,7 @@ export default {
       return new Promise((resolve, reject) => {
         this.map = L.map('map').setView([40.025647, -105.257869], 12.14);
         //add choice base tiles - background map of Lyon
-        L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(this.map);
 
@@ -166,7 +178,6 @@ export default {
             L.geoJSON(cityData, {
                 style: function (feature) {
                   return { weight: 2, fillColor: '#808080', color: '#0080ff' };
-                    // return {color: feature.properties.color};
                 }
             }).bindTooltip(function (layer) {
                 return layer.feature.properties.SUBCOM;
@@ -237,5 +248,5 @@ export default {
 <style lang="scss">
   @import '../assets/css/MarkerCluster.Default.css';
   @import '../assets/css/MarkerCluster.css';
-  /**/
+  /* @import '../assets/css/jquery-ui.css'; */
 </style>
