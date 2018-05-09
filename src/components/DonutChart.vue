@@ -19,8 +19,8 @@ export default {
       var vis = this.vis;
 
       vis.margin = { left:0, right:0, top:0, bottom:0 };
-      vis.width = 300 - vis.margin.left - vis.margin.right;
-      vis.height = 300 - vis.margin.top - vis.margin.bottom;
+      vis.width = 275 - vis.margin.left - vis.margin.right;
+      vis.height = 275 - vis.margin.top - vis.margin.bottom;
       vis.radius = Math.min(vis.width, vis.height) / 2;
 
       vis.pie = d3.pie()
@@ -179,7 +179,7 @@ export default {
 
 <style>
 path {
-  cursor: pointer;
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="font-size:16px"><text y="18">👆</text></svg>'), auto;
 }
 
 .toolTip {

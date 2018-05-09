@@ -42,7 +42,7 @@ export default {
           .attr("class", "y axisLabel")
           .attr("transform", "rotate(-90)")
           .attr("y", -60)
-          .attr("x", -170)
+          .attr("x", -(vis.height / 2))
           .attr("font-size", "20px")
           .attr("text-anchor", "middle")
           .text("Crime Count")
@@ -123,7 +123,9 @@ export default {
           .attr("r", 5);
 
       focus.append("text")
-          .attr("x", 15)
+          .attr("x", -85)
+          .attr("font-size", 12)
+          .attr("fill", '#000')
           .attr("dy", ".31em");
 
       vis.svg.append("rect")

@@ -203,6 +203,8 @@ export default {
   #dataviz {
     height: 100%;
     display: flex;
+    color: #383838;
+    fill: #383838;
   }
 
   .left {
@@ -216,7 +218,7 @@ export default {
     margin: 20px;
     display: flex;
     flex-flow: row wrap;
-    justify-content: space-between;
+    justify-content: space-evenly;
   }
 
   #map {
@@ -233,7 +235,7 @@ export default {
   }
 
   .info-box {
-    flex: 0 1 40%;
+    flex: 0 1 45%;
     border: 1px solid #d0d0d0;
     align-self: flex-start;
     padding: 10px;
