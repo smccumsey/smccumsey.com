@@ -16,7 +16,7 @@ import 'leaflet.markercluster.layersupport';
 // import '../../static/js/leaflet.SliderControl.min.js'
 
 export default {
-  props: ['dataFeatures'],
+  props: ['dataFeatures', 'activeOffense', 'colorPicker'],
   data() {
     return {
       map: null,
@@ -50,7 +50,7 @@ export default {
           showCoverageOnHover: false,
         });
         const control = L.control.layers(null, null, {
-          collapsed: false,
+          collapsed: true,
           sortLayers: true,
           hideSingleBase: true,
           sortFunction: (layerA, layerB, nameA, nameB)  => {
@@ -60,9 +60,7 @@ export default {
 
         const uniqueOffenses = Object.keys(dataFeatures);
         const timeFormat = d3.timeFormat("%a %b %e, %Y");
-        const colorPicker = d3.scaleOrdinal()
-          .domain(uniqueOffenses)
-          .range(d3.quantize(t => d3.interpolateRainbow(t), uniqueOffenses.length));
+        const colorPicker = this.colorPicker;
 
         const myLayerGroups = uniqueOffenses.map((x) => {
           return L.geoJSON(dataFeatures[x], {
@@ -95,6 +93,10 @@ export default {
           group.addTo(map);
         })
         map.addLayer(mcgLayerSupportGroup);
+
+        map.on('overlayadd', function(ev) {
+          console.log(ev); // ev is an event object (MouseEvent in this case)
+        });
 
         // const sliderControl = L.control.sliderControl({
         //   position: "topleft",

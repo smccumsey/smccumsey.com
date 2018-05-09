@@ -6,12 +6,12 @@
 import * as d3 from 'd3';
 
 export default {
-  props: ['donutData'],
+  props: ['donutData', 'colorPicker'],
   data() {
     return {
       vis: {},
       variable: 'offense',
-      activeOffense: null,
+      activeOffense: "Vandalism",
     }
   },
   methods: {
@@ -19,12 +19,12 @@ export default {
       var vis = this.vis;
 
       vis.margin = { left:0, right:0, top:0, bottom:0 };
-      vis.width = 250 - vis.margin.left - vis.margin.right;
-      vis.height = 250 - vis.margin.top - vis.margin.bottom;
+      vis.width = 300 - vis.margin.left - vis.margin.right;
+      vis.height = 300 - vis.margin.top - vis.margin.bottom;
       vis.radius = Math.min(vis.width, vis.height) / 2;
 
       vis.pie = d3.pie()
-        .padAngle(0.03)
+        .padAngle(0.001)
         .value(function(d) { return d.data; })
         .sort(null);
 
@@ -56,9 +56,7 @@ export default {
     updateVis() {
       const vis = this.vis;
       const uniqueOffenses = this.donutData.map(x => x.offense);
-      const color = d3.scaleOrdinal()
-        .domain(uniqueOffenses)
-        .range(d3.quantize(t => d3.interpolateRainbow(t), uniqueOffenses.length));
+      const color = this.colorPicker;
 
       const totalCrimes = d3.sum(this.donutData.map(x => x.data));
       const formatter = d3.format(".2%")
@@ -88,7 +86,7 @@ export default {
         .duration(750)
         .attrTween("d", arcTween)
         .attr("fill-opacity", (d) => {
-          return (d.data.offense === activeOffense) ? 1 : 0.3;
+          return (d.data.offense === activeOffense) ? 1 : 0.5;
         })
 
       // ENTER new elements in the array.
@@ -101,7 +99,7 @@ export default {
           return color(d.data.offense)
         })
         .attr("fill-opacity", function(d) {
-          return (d.data.offense === activeOffense) ? 1 : 0.3;
+          return (d.data.offense === activeOffense) ? 1 : 0.5;
         })
         .on("mousemove", (d) => {
             div.style("left", d3.event.pageX+10+"px");
@@ -168,7 +166,7 @@ export default {
     },
     arcClicked(arc){
       this.activeOffense = arc.data.offense;
-      console.log("SELECT", arc.data.offense);
+      this.$emit('selectOffense', this.activeOffense);
       this.wrangleData();
     },
   },
