@@ -16,6 +16,7 @@ import 'leaflet.markercluster.layersupport';
 // import '../../static/js/leaflet.SliderControl.min.js'
 
 export default {
+  props: ['dataFeatures'],
   data() {
     return {
       map: null,
@@ -37,56 +38,6 @@ export default {
         // all markers processed - hide the progress bar:
         progress.style.display = 'none';
       }
-    },
-    sortByDate(dataset, dateKey) {
-      const dataClone = JSON.parse(JSON.stringify(dataset))
-      return dataClone.sort(function(a, b){
-        var keyA = new Date(a.properties[dateKey]),
-            keyB = new Date(b.properties[dateKey]);
-        // Compare the 2 dates
-        if(keyA < keyB) return -1;
-        if(keyA > keyB) return 1;
-        return 0;
-      });
-    },
-    parseGeoJson(dataFeatures) {
-      const parseTime = d3.timeParse("%Y/%m/%d");
-      const groupedData = {};
-
-      dataFeatures.forEach((d) => {
-        d.properties.REPORTDATE = parseTime(d.properties.REPORTDATE);
-      });
-      const sortedData = this.sortByDate(dataFeatures, 'REPORTDATE');
-
-      sortedData.forEach((d) => {
-        groupedData[d.properties.OFFENSE] = groupedData[d.properties.OFFENSE] || [];
-        groupedData[d.properties.OFFENSE].push(d);
-      });
-
-      return groupedData;
-    },
-    getUnique(dataset, key) {
-      // get offense categories
-      const uniqueArr = dataset.reduce((acc, elem) => {
-        const value = elem[key];
-          if (acc.indexOf(value) === -1){
-           acc.push(value);
-          }
-        return acc;
-      }, []);
-      return uniqueArr;
-    },
-    loadData() {
-      return new Promise((resolve, reject) => {
-        d3.json("./static/data/CrimeLocations.GeoJSON")
-          .then((data) => {
-            const parsedData = this.parseGeoJson(data.features);
-            return resolve(parsedData);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
     },
     addData(dataFeatures) {
       return new Promise((resolve, reject) => {
@@ -187,58 +138,10 @@ export default {
           return resolve();
       })
     },
-    setup() {
-        // map.on('load', function () {
-          // const dataRecord = []
-          // const organizedCrime = {};
-          // this.crimeData = this.sortByDate(res, 'REPORTDATE');
-          // this.dateRange = d3.extent(this.crimeData, d => d.REPORTDATE)
-          //
-          // const uniqueOffenses = this.getUnique(this.crimeData, 'OFFENSE');
-          // const color = d3.scaleOrdinal()
-          //   .domain(uniqueOffenses)
-          //   .range(d3.quantize(t => d3.interpolateWarm(t * 0.8 + 0.3), uniqueOffenses.length))
-          // // const spectrum = d3.scaleOrdinal(d3.schemeRdYlGn[uniqueOffenses.length]);
-          // this.crimeData.forEach((x) => {
-          //   const {lng, lat} = x.location;
-          //   if (lng && lat) {
-          //     let circle = L.circleMarker([lat, lng], {
-          //       radius: 1,
-          //       fillOpacity: 1,
-          //       fillColor: color(x.OFFENSE),
-          //       color: color(x.OFFENSE),
-          //     });
-          //     organizedCrime[x.OFFENSE] = organizedCrime[x.OFFENSE] || [];
-          //     organizedCrime[x.OFFENSE].push(circle);
-          //     dataRecord.push({
-          //       x,
-          //       circle,
-          //     });
-          //   }
-          // })
-          // console.log(dataRecord);
-          // debugger;
-          // console.log(organizedCrime);
-          // Object.keys(organizedCrime).forEach((key) => {
-          //   const values = organizedCrime[key];
-          //   this.layers[key] = L.layerGroup(organizedCrime[key])
-          //     .on('click', function() { L.Layer.remove() })
-          //     .addTo(this.map);
-          // })
-          // L.control.layers(this.layers, null, {
-          //   collapsed: false,
-          //   sortLayers: true,
-          //   sortFunction: (layerA, layerB, nameA, nameB)  => {
-          //     return organizedCrime[nameB].length - organizedCrime[nameA].length;
-          //   }
-          // }).addTo(this.map);
-        // })
-    }
   },
   mounted() {
     this.initMap()
-    .then(this.loadData)
-    .then((data) => this.addData(data))
+    .then(this.addData(this.dataFeatures))
     .then(() => console.log('success'))
     .catch((e) => console.log(e));
   }
