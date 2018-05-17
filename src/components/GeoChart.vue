@@ -16,7 +16,8 @@ import 'leaflet.markercluster.layersupport';
 // import '../../static/js/leaflet.SliderControl.min.js'
 
 export default {
-  props: ['dataFeatures', 'activeOffense', 'colorPicker'],
+  name: 'GeoChart',
+  props: ['geoData', 'activeOffense', 'colorPicker'],
   data() {
     return {
       map: null,
@@ -39,7 +40,8 @@ export default {
         progress.style.display = 'none';
       }
     },
-    addData(dataFeatures) {
+    // TODO optimize me
+    addData(geoData) {
       return new Promise((resolve, reject) => {
         const map = this.map;
         // const pointList = [];
@@ -54,16 +56,16 @@ export default {
           sortLayers: true,
           hideSingleBase: true,
           sortFunction: (layerA, layerB, nameA, nameB)  => {
-            return dataFeatures[nameB].length - dataFeatures[nameA].length;
+            return geoData[nameB].length - geoData[nameA].length;
           },
         });
 
-        const uniqueOffenses = Object.keys(dataFeatures);
+        const uniqueOffenses = Object.keys(geoData);
         const timeFormat = d3.timeFormat("%a %b %e, %Y");
         const colorPicker = this.colorPicker;
 
         const myLayerGroups = uniqueOffenses.map((x) => {
-          return L.geoJSON(dataFeatures[x], {
+          return L.geoJSON(geoData[x], {
             pointToLayer: function (feature, latlng) {
               return L.circleMarker(latlng, {
                   radius: 4,
@@ -143,7 +145,7 @@ export default {
   },
   mounted() {
     this.initMap()
-    .then(this.addData(this.dataFeatures))
+    .then(this.addData(this.geoData))
     .then(() => console.log('success'))
     .catch((e) => console.log(e));
   }

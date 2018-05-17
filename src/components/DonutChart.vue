@@ -6,6 +6,7 @@
 import * as d3 from 'd3';
 
 export default {
+  name: 'DonutChart',
   props: ['donutData', 'colorPicker'],
   data() {
     return {

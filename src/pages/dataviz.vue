@@ -1,5 +1,5 @@
 <template>
-  <div id='dataviz' v-if="visData">
+  <div id="dataviz" v-if="geoData">
     <div class="left">
       <div class="wrapper">
 
@@ -18,25 +18,23 @@
           </ul>
         </div>
 
-        <div class="pie-chart">
-          <donut-chart
-            :donutData="donutData"
-            :colorPicker="colorPicker"
-            @selectOffense="updateActiveOffense"/>
-        </div>
+        <donut-chart
+          class="pie-chart"
+          :donutData="donutData"
+          :colorPicker="colorPicker"
+          @selectOffense="updateActiveOffense"/>
 
-        <div class="line-chart">
-          <line-chart
-            :lineData="lineData"
-            :colorPicker="colorPicker"
-            :activeOffense="activeOffense"/>
-        </div>
+        <line-chart
+          class="line-chart"
+          :lineData="lineData"
+          :colorPicker="colorPicker"
+          :activeOffense="activeOffense"/>
 
       </div>
     </div>
-    <data-map
+    <geo-chart
       class="right"
-      :dataFeatures="visData"
+      :geoData="geoData"
       :colorPicker="colorPicker"
       :activeOffense="activeOffense"/>
   </div>
@@ -45,8 +43,7 @@
 <script>
 import * as d3 from 'd3';
 
-import DataFilter from '../components/DataFilter';
-import DataMap from '../components/DataMap';
+import GeoChart from '../components/GeoChart';
 import DonutChart from '../components/DonutChart';
 import LineChart from '../components/LineChart';
 
@@ -54,28 +51,21 @@ import LineChart from '../components/LineChart';
 export default {
   name: 'Dataviz',
   components: {
-    DataMap,
-    DataFilter,
+    GeoChart,
     DonutChart,
     LineChart
   },
   data() {
     return {
-      visData: null,
+      geoData: null,
       donutData: null,
       lineData: null,
-      uniqueOffenses: null,
-      dateRange: null,
+      uniqueOffenses: [],
+      dateRange: [],
       activeOffense: 'Vandalism',
     }
   },
   computed: {
-    colorPicker() {
-      if (!this.uniqueOffenses) return [];
-      return d3.scaleOrdinal()
-        .domain(this.uniqueOffenses)
-        .range(d3.quantize(t => d3.interpolateRainbow(t), this.uniqueOffenses.length));
-    },
     sortedOffenses() {
       return this.uniqueOffenses.concat().sort();
     },
@@ -101,32 +91,28 @@ export default {
         }
       });
     },
-    sortByDate(dataset, dateKey) {
-      const dataClone = JSON.parse(JSON.stringify(dataset))
-      return dataClone.sort(function(a, b){
-        var keyA = new Date(a.properties[dateKey]),
-            keyB = new Date(b.properties[dateKey]);
-        // Compare the 2 dates
-        if(keyA < keyB) return -1;
-        if(keyA > keyB) return 1;
-        return 0;
-      });
-    },
-    parseGeoJson(dataFeatures) {
-      const parseTime = d3.timeParse("%Y/%m/%d");
+    parseGeoJson(features) {
       const groupedData = {};
-
-      dataFeatures.forEach((d) => {
+      const parseTime = d3.timeParse("%Y/%m/%d");
+      // dataFeatures.forEach((d) => {
+      //   d.properties.REPORTDATE = parseTime(d.properties.REPORTDATE);
+      // });
+      features.forEach((d) => {
         d.properties.REPORTDATE = parseTime(d.properties.REPORTDATE);
-      });
-      const sortedData = this.sortByDate(dataFeatures, 'REPORTDATE');
-
-      sortedData.forEach((d) => {
         groupedData[d.properties.OFFENSE] = groupedData[d.properties.OFFENSE] || [];
         groupedData[d.properties.OFFENSE].push(d);
       });
 
-      return { groupedData, sortedData };
+      this.dateRange = d3.extent(features, (d) => d.properties.REPORTDATE.getTime())
+                         .map(d => new Date(d));
+
+      this.uniqueOffenses = Object.keys(groupedData);
+
+      this.colorPicker = d3.scaleOrdinal()
+        .domain(this.uniqueOffenses)
+        .range(d3.quantize(t => d3.interpolateRainbow(t), this.uniqueOffenses.length));
+
+      return groupedData;
     },
     loadData() {
       return new Promise((resolve, reject) => {
@@ -156,7 +142,6 @@ export default {
     genLineData(allData) {
       const [first, last] = this.dateRange;
       const days = d3.timeDay.range(new Date(first), new Date(last));
-
       const newData = {}
 
       this.uniqueOffenses.forEach((offense) => {
@@ -165,7 +150,7 @@ export default {
         const output = days.map((d) => {
           return {
             date: d,
-            offenseCount: count.hasOwnProperty(d.toISOString()) ? count[d.toISOString()] :0,
+            offenseCount: count.hasOwnProperty(d) ? count[d] :0,
           }
         });
         newData[offense] = output;
@@ -173,14 +158,11 @@ export default {
       return newData;
     },
   },
-  mounted() {
+  created() {
     this.loadData()
-    .then((data) => {
-      const { groupedData, sortedData } = data;
-      this.uniqueOffenses = Object.keys(groupedData);
-      this.dateRange = d3.extent(sortedData, (d) => d.properties.REPORTDATE);
-
-      this.visData = groupedData;
+    .then((groupedData) => {
+      // set data for charts
+      this.geoData = groupedData;
       this.donutData = Object.keys(groupedData).map(key => {
         return { offense: key, data: groupedData[key].length };
       })
