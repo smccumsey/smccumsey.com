@@ -6,7 +6,7 @@ html, body
   font-family: "Source Sans Pro", Arial, sans-serif;
   height: 100vh;
   margin: 0;
-  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="font-size:14px"><text y="16">🐛 </text></svg>'), auto;
+  /* cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="font-size:14px"><text y="16">🐛 </text></svg>'), auto; */
 }
 
 header
@@ -29,7 +29,7 @@ footer
 a, a:hover, a:focus, a:visited
 {
   color: #000;
-  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="font-size:16px"><text y="18">👆</text></svg>'), auto;
+  /* cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="font-size:16px"><text y="18">👆</text></svg>'), auto; */
 }
 
 a.header__logo {

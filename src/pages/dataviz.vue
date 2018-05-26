@@ -19,12 +19,16 @@
         </div> -->
 
         <div id="crime-table">
-          <v-client-table :data="tableData" :columns="columns" :options="options">
-            <div
-            slot="color"
-            slot-scope="props"
-            class="swatch"
-            :style="{background: props.row.color}"></div>
+          <v-client-table
+            :data="tableData"
+            :columns="columns"
+            :options="options"
+            @row-click="updateActiveOffense">
+              <div
+              slot="color"
+              slot-scope="props"
+              class="swatch"
+              :style="{background: props.row.color}"></div>
             <!-- <a slot="color" slot-scope="props" :href="edit(props.row.id)"></a> -->
           </v-client-table>
         </div>
@@ -95,11 +99,12 @@ export default {
       activeOffense: 'Vandalism',
       columns: ['color', 'name', 'percent'],
       tableData: [],
+      uniqueKey: 'id',
       options: {
         perPage: 35,
         perPageValues: [],
         filterable: false,
-        skin: 'table',
+        skin: 'table is-hoverable',
         orderBy: {
           column: 'percent',
         },
@@ -116,7 +121,16 @@ export default {
     },
   },
   methods: {
-    updateActiveOffense(newOffense) {
+    updateActiveOffense(rowClick) {
+      const newOffense = rowClick.row.name;
+      const rows = document.querySelectorAll('#crime-table tr');
+      const clickedRow = rowClick.event.target.closest('tr');
+      // remove 'is-selected' class from all rows
+      rows.forEach(r => r.classList.remove('is-selected'))
+      // add the 'is-selected' class to the clicked row
+      clickedRow.classList.add('is-selected');
+
+      // debugger;
       this.activeOffense = newOffense;
       const idx = this.uniqueOffenses.indexOf(newOffense);
       const checkboxes = document.querySelectorAll('input[type=checkbox].leaflet-control-layers-selector');
@@ -227,8 +241,9 @@ export default {
       // const offensePercents = Object.keys(groupedData).map(key => {
       //   return { offense: key, data: (groupedData[key].length / totalCrimes) };
       // })
-      this.tableData = this.uniqueOffenses.map((offense) => {
+      this.tableData = this.uniqueOffenses.map((offense, i) => {
         return {
+          id: i,
           color: this.colorPicker(offense),
           name: offense,
           percent: +((groupedData[offense].length / totalCrimes) * 100).toFixed(2),
@@ -334,7 +349,11 @@ export default {
     font-size: .8rem;
   }
 
-  td {
+  #crime-table tr {
+    cursor: pointer;
+  }
+
+  #crime-table td {
       height: 12pt;
     }
 //   td {

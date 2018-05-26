@@ -96,9 +96,9 @@ export default {
         })
         map.addLayer(mcgLayerSupportGroup);
 
-        map.on('overlayadd', function(ev) {
-          console.log(ev); // ev is an event object (MouseEvent in this case)
-        });
+        // map.on('overlayadd', function(ev) {
+        //   console.log(ev); // ev is an event object (MouseEvent in this case)
+        // });
 
         // const sliderControl = L.control.sliderControl({
         //   position: "topleft",
