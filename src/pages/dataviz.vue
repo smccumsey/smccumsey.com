@@ -2,7 +2,7 @@
   <div id="dataviz" v-if="geoData">
     <div class="left">
       <div class="wrapper">
-
+<!--
         <div class="info-box">
           <a target="_blank" href="https://bouldercolorado.gov/open-data/crime-locations/">
             <h4>Crime location data for the City of Boulder</h4>
@@ -16,9 +16,19 @@
               <span>{{offense}}</span>
             </li>
           </ul>
-        </div>
+        </div> -->
 
-        <donut-chart
+        <div id="crime-table">
+          <v-client-table :data="tableData" :columns="columns" :options="options">
+            <div
+            slot="color"
+            slot-scope="props"
+            class="swatch"
+            :style="{background: props.row.color}"></div>
+            <!-- <a slot="color" slot-scope="props" :href="edit(props.row.id)"></a> -->
+          </v-client-table>
+        </div>
+        <!-- <donut-chart
           class="pie-chart"
           :donutData="donutData"
           :colorPicker="colorPicker"
@@ -28,7 +38,7 @@
           class="line-chart"
           :lineData="lineData"
           :colorPicker="colorPicker"
-          :activeOffense="activeOffense"/>
+          :activeOffense="activeOffense"/> -->
 
       </div>
     </div>
@@ -41,12 +51,32 @@
 </template>
 
 <script>
+import Vue from 'vue';
 import * as d3 from 'd3';
 
 import GeoChart from '../components/GeoChart';
 import DonutChart from '../components/DonutChart';
 import LineChart from '../components/LineChart';
+import { ClientTable } from 'vue-tables-2';
 
+import 'bulma';
+
+Vue.use(ClientTable, {}, false, 'bulma', 'default');
+
+
+Array.prototype.simpleSMA=function(N) {
+return this.map(
+  (el, index, _arr) => {
+      return _arr.filter(
+      (x2, i2) => {
+        return i2 <= index && i2 > index - N;
+        })
+      .reduce(
+      (current, last, index, arr) => {
+        return (current + last);
+        })/index || 1;
+      });
+};
 
 export default {
   name: 'Dataviz',
@@ -63,7 +93,22 @@ export default {
       uniqueOffenses: [],
       dateRange: [],
       activeOffense: 'Vandalism',
-    }
+      columns: ['color', 'name', 'percent'],
+      tableData: [],
+      options: {
+        perPage: 35,
+        perPageValues: [],
+        filterable: false,
+        skin: 'table',
+        orderBy: {
+          column: 'percent',
+        },
+        pagination: {
+          dropdown: false,
+          edge: false,
+        },
+      },
+    };
   },
   computed: {
     sortedOffenses() {
@@ -146,14 +191,22 @@ export default {
 
       this.uniqueOffenses.forEach((offense) => {
         const dataGroup = allData[offense];
-        const count = this.countOffenses(dataGroup);
+        const count = this.countOffenses(dataGroup); // { date: count }
         const output = days.map((d) => {
           return {
             date: d,
             offenseCount: count.hasOwnProperty(d) ? count[d] :0,
           }
         });
-        newData[offense] = output;
+        // compute a moving average of the output
+        const simple = output.map(x => x.offenseCount);
+        const simpleSMA = simple.simpleSMA(2);
+        newData[offense] = output.map((x, i) => {
+          return {
+            date: x.date,
+            offenseCount: simpleSMA[i] !== Infinity ? simpleSMA[i] : 0,
+          }
+        });
       });
       return newData;
     },
@@ -163,10 +216,25 @@ export default {
     .then((groupedData) => {
       // set data for charts
       this.geoData = groupedData;
-      this.donutData = Object.keys(groupedData).map(key => {
-        return { offense: key, data: groupedData[key].length };
+      // this.donutData = Object.keys(groupedData).map(key => {
+      //   return { offense: key, data: groupedData[key].length };
+      // })
+
+      const totalCrimes = Object.values(groupedData).reduce((acc, elem) => {
+        acc += elem.length;
+        return acc;
+      }, 0)
+      // const offensePercents = Object.keys(groupedData).map(key => {
+      //   return { offense: key, data: (groupedData[key].length / totalCrimes) };
+      // })
+      this.tableData = this.uniqueOffenses.map((offense) => {
+        return {
+          color: this.colorPicker(offense),
+          name: offense,
+          percent: +((groupedData[offense].length / totalCrimes) * 100).toFixed(2),
+        }
       })
-      this.lineData = this.genLineData(groupedData);
+      // this.lineData = this.genLineData(groupedData);
 
       console.log('success')
     })
@@ -176,12 +244,17 @@ export default {
     formatDate: function (value) {
       if (!value) return '';
       return d3.timeFormat("%m/%d/%y")(new Date(value));
+    },
+    formatPercent: function (value) {
+      if (!value) return '';
+      const formatter = d3.format(".2%");
+      return formatter(value);
     }
   }
 }
 </script>
 
-<style>
+<style lang="scss">
   #dataviz {
     height: 100%;
     display: flex;
@@ -190,10 +263,10 @@ export default {
   }
 
   .left {
-    flex: 0 0 50%;
+    flex: 0 0 30%;
   }
   .right {
-    flex: 0 0 50%;
+    flex: 0 0 70%;
   }
 
   .wrapper {
@@ -205,7 +278,7 @@ export default {
 
   #map {
     /* float: right; */
-    height: 100vh;
+    height: 80vh;
   }
   .marker {
     background: black;
@@ -235,10 +308,11 @@ export default {
     padding: 0;
     margin: 0;
   }
+
   .swatch {
-    display: inline-block;
-    width: 5px;
-    height: 10px;
+    /* display: inline-block; */
+    width: 100%;
+    height: 100%;
   }
   .legend li {
     padding: 2px;
@@ -255,4 +329,68 @@ export default {
     height: 350px;
   }
 
+  /* table */
+  #crime-table {
+    font-size: .8rem;
+  }
+
+  td {
+      height: 12pt;
+    }
+//   td {
+//     height: 12pt;
+//   }
+//   table {
+//     border-collapse: collapse;
+//   }
+//   tr {
+//     border: 1px solid grey;
+//   }
+//   th {
+//     text-align: left;
+//   }
+//
+//   th, td {
+//     border-right: 1px solid grey;
+//   }
+//
+// .VuePagination {
+//   text-align: center;
+// }
+//
+// .vue-title {
+//   text-align: center;
+//   margin-bottom: 10px;
+// }
+//
+// .vue-pagination-ad {
+//   text-align: center;
+// }
+//
+// .glyphicon.glyphicon-eye-open {
+//   width: 16px;
+//   display: block;
+//   margin: 0 auto;
+// }
+//
+// th:nth-child(3) {
+//   text-align: center;
+// }
+//
+// .VueTables__child-row-toggler {
+//   width: 16px;
+//   height: 16px;
+//   line-height: 16px;
+//   display: block;
+//   margin: auto;
+//   text-align: center;
+// }
+//
+// .VueTables__child-row-toggler--closed::before {
+//   content: "+";
+// }
+//
+// .VueTables__child-row-toggler--open::before {
+//   content: "-";
+// }
 </style>

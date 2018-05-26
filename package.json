@@ -16,6 +16,8 @@
   "dependencies": {
     "amazon-cognito-identity-js": "^2.0.4",
     "aws-sdk": "^2.229.1",
+    "bootstrap": "^4.1.1",
+    "bulma": "^0.7.1",
     "d3": "^5.1.0",
     "leaflet": "^1.0.3",
     "leaflet-geosearch": "^2.6.0",
@@ -27,6 +29,7 @@
     "vue": "^2.5.16",
     "vue-router": "^3.0.1",
     "vue-slider-component": "^2.6.2",
+    "vue-tables-2": "^1.4.50",
     "vue-text-mask": "^6.0.2",
     "vue2-editor": "^2.4.3",
     "vue2-google-maps": "^0.8.12",

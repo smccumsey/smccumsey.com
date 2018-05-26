@@ -14,7 +14,7 @@ export default {
 <style>
 body {
   margin: 0;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 /* #app {

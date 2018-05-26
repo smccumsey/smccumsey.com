@@ -85,7 +85,7 @@ export default {
 
       // Update scales
       vis.x.domain(d3.extent(vis.dataFiltered, function(d) { return d.date; }));
-      vis.y.domain([d3.min(vis.dataFiltered, function(d) { return d[vis.yVariable]; }) / 1.005,
+      vis.y.domain([0,
           d3.max(vis.dataFiltered, function(d) { return d[vis.yVariable]; }) * 1.005]);
       // vis.y.domain([0,30]);
 
@@ -100,7 +100,7 @@ export default {
       vis.xAxisCall.scale(vis.x);
       vis.xAxis.transition(vis.t()).call(vis.xAxisCall);
       vis.yAxisCall.scale(vis.y);
-      vis.yAxis.transition(vis.t()).call(vis.yAxisCall.tickFormat(formatAbbreviation));
+      vis.yAxis.transition(vis.t()).call(vis.yAxisCall); // .tickFormat(formatAbbreviation));
 
       // Discard old tooltip elements
       d3.select(".focus").remove();
