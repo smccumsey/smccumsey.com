@@ -1,56 +1,54 @@
 <template>
-  <div id="dataviz" v-if="geoData">
-    <div class="left">
-      <div class="wrapper">
-<!--
-        <div class="info-box">
-          <a target="_blank" href="https://bouldercolorado.gov/open-data/crime-locations/">
-            <h4>Crime location data for the City of Boulder</h4>
-          </a>
-          <p>Date Range: {{ dateRange[0] | formatDate }} - {{ dateRange[1] | formatDate }}</p>
-          <p>Offense types:</p>
-          <ul class="legend">
-            <li v-for="(offense, id) in sortedOffenses"
-                :key="id">
-              <div class="swatch" :style="{background: colorPicker(offense)}"></div>
-              <span>{{offense}}</span>
-            </li>
-          </ul>
-        </div> -->
+  <div>
+    <div id="dataviz" v-if="geoData">
+      <div class="left">
+        <div class="wrapper">
 
-        <div id="crime-table">
-          <v-client-table
-            :data="tableData"
-            :columns="columns"
-            :options="options"
-            @row-click="updateActiveOffense">
-              <div
-              slot="color"
-              slot-scope="props"
-              class="swatch"
-              :style="{background: props.row.color}"></div>
-            <!-- <a slot="color" slot-scope="props" :href="edit(props.row.id)"></a> -->
-          </v-client-table>
+          <div class="info">
+            <a target="_blank" href="https://bouldercolorado.gov/open-data/crime-locations/">
+              <h4>Crime location data for the City of Boulder</h4>
+            </a>
+            <p>Date Range: {{ dateRange[0] | formatDate }} - {{ dateRange[1] | formatDate }}</p>
+          </div>
+
+          <div id="crime-table">
+            <v-client-table
+              :data="tableData"
+              :columns="columns"
+              :options="options"
+              @row-click="updateActiveOffense">
+                <div
+                slot="color"
+                slot-scope="props"
+                class="swatch"
+                :style="{background: props.row.color}"></div>
+              <!-- <a slot="color" slot-scope="props" :href="edit(props.row.id)"></a> -->
+            </v-client-table>
+          </div>
+          <!-- <donut-chart
+            class="pie-chart"
+            :donutData="donutData"
+            :colorPicker="colorPicker"
+            @selectOffense="updateActiveOffense"/>
+
+          <line-chart
+            class="line-chart"
+            :lineData="lineData"
+            :colorPicker="colorPicker"
+            :activeOffense="activeOffense"/> -->
+
         </div>
-        <!-- <donut-chart
-          class="pie-chart"
-          :donutData="donutData"
-          :colorPicker="colorPicker"
-          @selectOffense="updateActiveOffense"/>
-
-        <line-chart
-          class="line-chart"
-          :lineData="lineData"
-          :colorPicker="colorPicker"
-          :activeOffense="activeOffense"/> -->
-
       </div>
+      <geo-chart
+        class="right"
+        :geoData="geoData"
+        :colorPicker="colorPicker"
+        :activeOffense="activeOffense"/>
     </div>
-    <geo-chart
-      class="right"
-      :geoData="geoData"
-      :colorPicker="colorPicker"
-      :activeOffense="activeOffense"/>
+    <div id="loader" v-else>
+      <div class="box"></div>
+      <div class="box"></div>
+    </div>
   </div>
 </template>
 
@@ -293,7 +291,7 @@ export default {
 
   #map {
     /* float: right; */
-    height: 80vh;
+    height: 100%;
   }
   .marker {
     background: black;
@@ -304,14 +302,15 @@ export default {
     cursor: pointer;
   }
 
-  .info-box {
-    flex: 0 1 45%;
-    border: 1px solid #d0d0d0;
-    align-self: flex-start;
+  .info {
     padding: 10px;
+    text-align: center;
     /* box-shadow: inset 0 0 10px #000000; */
     font-size: 12px;
-    height: 300px;
+  }
+
+  .info a {
+    text-decoration: underline;
   }
 
   .legend {
@@ -412,4 +411,53 @@ export default {
 // .VueTables__child-row-toggler--open::before {
 //   content: "-";
 // }
+
+$duration: 4s;
+
+.box {
+  background:
+  radial-gradient(circle farthest-side at 0% 50%,#fb1 23.5%,rgba(240,166,17,0) 0)21px 30px,
+  radial-gradient(circle farthest-side at 0% 50%,#B71 24%,rgba(240,166,17,0) 0)19px 30px,
+  linear-gradient(#fb1 14%,rgba(240,166,17,0) 0, rgba(240,166,17,0) 85%,#fb1 0)0 0,
+  linear-gradient(150deg,#fb1 24%,#B71 0,#B71 26%,rgba(240,166,17,0) 0,rgba(240,166,17,0) 74%,#B71 0,#B71 76%,#fb1 0)0 0,
+  linear-gradient(30deg,#fb1 24%,#B71 0,#B71 26%,rgba(240,166,17,0) 0,rgba(240,166,17,0) 74%,#B71 0,#B71 76%,#fb1 0)0 0,
+  linear-gradient(90deg,#B71 2%,#fb1 0,#fb1 98%,#B71 0%)0 0 #fb1;
+  background-size:40px 60px;
+  height: 1em;
+  width: 1em;
+  font-size: 10vmin;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -.5em;
+  margin-left: -1em;
+  transform-origin: top right;
+
+  animation: box-flip $duration ease-in-out infinite;
+
+  &:nth-child(2) {
+    animation-delay: #{$duration / -2};
+  }
+}
+
+@keyframes box-flip {
+  #{percentage(1/6)} {
+    transform: rotate(0);
+  }
+  #{percentage(2/6)} {
+    transform: rotate(.5turn);
+  }
+  #{percentage(3/6)} {
+    transform: rotate(.5turn);
+  }
+  #{percentage(4/6)} {
+    transform: rotate(.75turn);
+  }
+  #{percentage(5/6)} {
+    transform: rotate(.75turn);
+  }
+  #{percentage(6/6)} {
+    transform: rotate(1turn);
+  }
+}
 </style>
