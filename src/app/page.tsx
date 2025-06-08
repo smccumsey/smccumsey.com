@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
-import { cloneElement, isValidElement, ReactElement } from "react"
+import { cloneElement, isValidElement } from "react"
 import { Github, Linkedin, Mail, ExternalLink, Download } from "lucide-react"
 
 export const metadata: Metadata = {
@@ -87,6 +87,7 @@ function Button({
       return children;
     }
     const childProps = children.props as { className?: string };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return cloneElement<any>(children, {
       className: `${buttonClasses} ${sizes[size || "md"]} ${childVariants[variant]} ${childProps.className || ""}`
     })
@@ -138,7 +139,7 @@ export default function Portfolio() {
           <div className="flex flex-col md:flex-row gap-6 items-center">
             <div className="space-y-4 md:w-2/3">
               <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Hi, I'm Stephanie
+                Hi, I&apos;m Stephanie
                 <span className="block text-primary">Frontend Engineer</span>
               </h1>
               <p className="max-w-[600px] text-muted-foreground md:text-xl">
@@ -188,7 +189,7 @@ export default function Portfolio() {
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center">About Me</h2>
             <div className="max-w-3xl mx-auto space-y-4">
               <p>
-                I'm a passionate frontend engineer with 5+ years of experience building responsive, accessible web
+                I&apos;m a passionate frontend engineer with 5+ years of experience building responsive, accessible web
                 applications. I specialize in React, TypeScript, and modern frontend technologies.
               </p>
               <p>
@@ -197,7 +198,7 @@ export default function Portfolio() {
                 devices.
               </p>
               <p>
-                When I'm not coding, you can find me hiking, reading about new technologies, or contributing to
+                When I&apos;m not coding, you can find me hiking, reading about new technologies, or contributing to
                 open-source projects.
               </p>
             </div>
@@ -361,7 +362,7 @@ export default function Portfolio() {
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center">Get In Touch</h2>
             <div className="max-w-md mx-auto space-y-4">
               <p className="text-center text-muted-foreground">
-                I'm currently open to new opportunities. Feel free to reach out if you'd like to work together!
+                I&apos;m currently open to new opportunities. Feel free to reach out if you&apos;d like to work together!
               </p>
               <div className="flex flex-col gap-4">
                 <Button asChild className="gap-2">
