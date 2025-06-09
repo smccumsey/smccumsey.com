@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://johndoe.dev",
+    url: "https://smccumsey.com",
     title: "Stephanie McCumsey | Frontend Engineer",
     description:
       "Portfolio of Stephanie McCumsey, a frontend engineer specializing in React, TypeScript, and modern web technologies.",
@@ -154,18 +154,18 @@ export default function Portfolio() {
                 </Button>
               </div>
               <div className="flex gap-4 pt-4">
-                <Link href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile">
+                <Link href="https://github.com/smccumsey" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile">
                   <Github className="h-6 w-6" />
                 </Link>
                 <Link
-                  href="https://linkedin.com"
+                  href="https://www.linkedin.com/in/stephaniemccumsey/"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="LinkedIn Profile"
                 >
                   <Linkedin className="h-6 w-6" />
                 </Link>
-                <Link href="mailto:stephanie@example.com" aria-label="Email Me">
+                <Link href="mailto:smccumsey@gmail.com" aria-label="Email Me">
                   <Mail className="h-6 w-6" />
                 </Link>
               </div>
@@ -303,40 +303,49 @@ export default function Portfolio() {
             <div className="max-w-3xl mx-auto space-y-8">
               {[
                 {
-                  role: "Senior Frontend Engineer",
-                  company: "Tech Solutions Inc.",
-                  period: "2021 - Present",
-                  description:
-                    "Lead frontend development for multiple client projects. Implemented accessibility standards and improved performance metrics across all applications.",
-                  achievements: [
-                    "Reduced load time by 40% through code optimization",
-                    "Implemented CI/CD pipeline for frontend deployments",
-                    "Mentored junior developers on React best practices",
-                  ],
+                  "role": "Software Engineer",
+                  "company": "Atlassian (Trello)",
+                  "period": "2021 – 2025",
+                  "description": "Software engineering role focused on web development and maintenance",
+                  "achievements": [
+                    "Led a project to replace Redux usage with GraphQL across the web codebase",
+                    "Presented on Jest and React Testing Library at company front end forum",
+                    "Reduced dependency debt by over half for a project led across repos owned by the team",
+                    "Maintained the Trello desktop app and improved documentation after the previous owners left the team"
+                  ]
                 },
                 {
-                  role: "Frontend Developer",
-                  company: "Digital Innovations",
-                  period: "2018 - 2021",
-                  description:
-                    "Developed responsive web applications using React and TypeScript. Collaborated with designers to implement pixel-perfect UIs.",
-                  achievements: [
-                    "Built a component library used across multiple projects",
-                    "Improved accessibility compliance to WCAG AA standards",
-                    "Implemented state management with Redux and Context API",
-                  ],
+                  "role": "Software Engineer",
+                  "company": "Splunk",
+                  "period": "2019 – 2021",
+                  "description": "Software engineering role involving API development and front-end work",
+                  "achievements": [
+                    "Developed a GraphQL API using Apollo Server and consumed by a React app",
+                    "Steered front-end development for an internal customer support interface built from an OpenAPI definition and architected to follow compliance requirements",
+                    "Maintained and grew the marketing site for VictorOps (Splunk acquiree)"
+                  ]
                 },
                 {
-                  role: "Web Developer",
-                  company: "Creative Agency",
-                  period: "2016 - 2018",
-                  description:
-                    "Created responsive websites for clients across various industries. Focused on cross-browser compatibility and mobile-first design.",
-                  achievements: [
-                    "Developed 20+ client websites with responsive designs",
-                    "Implemented SEO best practices resulting in improved rankings",
-                    "Integrated various third-party APIs and services",
-                  ],
+                  "role": "Software Developer",
+                  "company": "PenLink",
+                  "period": "2018 – 2019",
+                  "description": "Software development role focusing on CI/CD, data visualization, and access control",
+                  "achievements": [
+                    "Set up a CI/CD pipeline that relied on unit tests passing and deployed to AWS",
+                    "Worked on building performant data visualizations using SVG and Vue JS",
+                    "Created access control logic within a web app to restrict certain features to different subscription tiers"
+                  ]
+                },
+                {
+                  "role": "Front-End Developer",
+                  "company": "Imagination International",
+                  "period": "2017 – 2018",
+                  "description": "Front-end development role supporting various web applications and processes",
+                  "achievements": [
+                    "Built a chat system with Vue JS and Firebase for messaging in an online classroom prototype",
+                    "Supported custom development request for marketing websites and accounting software",
+                    "Spearheaded a code review process amongst development team"
+                  ]
                 },
               ].map((job, index) => (
                 <div key={index} className="border-l-4 border-primary pl-4 space-y-2">
@@ -366,17 +375,17 @@ export default function Portfolio() {
               </p>
               <div className="flex flex-col gap-4">
                 <Button asChild className="gap-2">
-                  <Link href="mailto:stephanie@example.com">
-                    <Mail className="h-4 w-4" /> stephanie@example.com
+                  <Link href="mailto:smccumsey@gmail.com">
+                    <Mail className="h-4 w-4" /> smccumsey@gmail.com
                   </Link>
                 </Button>
                 <Button variant="outline" asChild className="gap-2">
-                  <Link href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
+                  <Link href="https://www.linkedin.com/in/stephaniemccumsey/" target="_blank" rel="noopener noreferrer">
                     <Linkedin className="h-4 w-4" /> LinkedIn Profile
                   </Link>
                 </Button>
                 <Button variant="outline" asChild className="gap-2">
-                  <Link href="https://github.com" target="_blank" rel="noopener noreferrer">
+                  <Link href="https://github.com/smccumsey" target="_blank" rel="noopener noreferrer">
                     <Github className="h-4 w-4" /> GitHub Profile
                   </Link>
                 </Button>
