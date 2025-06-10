@@ -19,7 +19,7 @@ export const metadata: Metadata = {
       "Portfolio of Stephanie McCumsey, a frontend engineer specializing in React, TypeScript, and modern web technologies.",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/cartoon-headshot.jpeg",
         width: 1200,
         height: 630,
         alt: "Stephanie McCumsey - Frontend Engineer",
@@ -173,7 +173,7 @@ export default function Portfolio() {
             <div className="md:w-1/3 flex justify-center">
               <div className="relative w-64 h-64 rounded-full overflow-hidden border-4 border-primary">
                 <Image
-                  src="/placeholder.svg?height=256&width=256"
+                  src="/cartoon-headshot.jpeg"
                   alt="Stephanie McCumsey"
                   fill
                   className="object-cover"
